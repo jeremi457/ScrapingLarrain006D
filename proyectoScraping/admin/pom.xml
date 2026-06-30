@@ -50,10 +50,17 @@
         <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
 
-    <dependency>
+	<dependency>
+		<groupId>org.jsoup</groupId>
+		<artifactId>jsoup</artifactId>
+		<version>1.17.2</version>
+		</dependency>
+
+	<dependency>
         <groupId>org.seleniumhq.selenium</groupId>
         <artifactId>selenium-java</artifactId>
-        <version>4.18.1</version> </dependency>
+        <version>4.18.1</version> 
+    </dependency>
 	</dependencies>
 	
 

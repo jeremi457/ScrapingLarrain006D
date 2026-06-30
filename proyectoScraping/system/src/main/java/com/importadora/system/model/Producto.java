@@ -1,11 +1,6 @@
 package com.importadora.system.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,11 +20,17 @@ public class Producto {
     private String nombreProducto;
 
     @Column(nullable = false)
-    private Double precioLocal;
+    private Double precioLocal; // El costo base original en China
 
     @Column(nullable = false)
     private String tipoProducto;
 
     @Column(nullable = false)
     private Integer stockBodega;
+
+    
+    public Double getPrecioAlPublico() {
+        if (this.precioLocal == null) return 0.0;
+        return Math.round((this.precioLocal * 1.50) * 100.0) / 100.0;
+    }
 }
