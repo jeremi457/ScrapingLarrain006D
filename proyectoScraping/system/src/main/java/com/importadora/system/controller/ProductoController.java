@@ -1,44 +1,32 @@
 package com.importadora.system.controller;
 
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.importadora.system.dto.ProductoPublicadoDTO;
 import com.importadora.system.model.Producto;
-import com.importadora.system.services.ProductoService;
+import com.importadora.system.repository.ProductoRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/catalogo")
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/v1/productos")
 public class ProductoController {
 
-    private final ProductoService productoService;
+    private final ProductoRepository productoRepository;
 
-    public ProductoController(ProductoService productoService) {
-        this.productoService = productoService;
+
+    public ProductoController(ProductoRepository productoRepository) {
+        this.productoRepository = productoRepository;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Producto>> listarCatalogo() {
-        List<Producto> productos = productoService.mostrarCatalogo();
-        if (productos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(productos);
-    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Producto> buscarProducto(@PathVariable Long id) {
-        try {
-            Producto producto = productoService.buscarPorId(id);
-            return ResponseEntity.ok(producto);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+    @PostMapping
+    public ResponseEntity<Void> recibirNuevoProducto(@RequestBody ProductoPublicadoDTO dto) {
+        Producto nuevoProducto = new Producto();
+        nuevoProducto.setNombreProducto(dto.nombreProducto());
+        nuevoProducto.setPrecioLocal(dto.precioLocal()); 
+        nuevoProducto.setTipoProducto(dto.tipoProducto());
+        nuevoProducto.setStockBodega((int) (Math.random() * 20) + 5); 
+
+        productoRepository.save(nuevoProducto);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,16 +1,14 @@
 package com.importadora.system.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor 
 @Data
 @Entity
 @Table(name="pedido")
@@ -26,4 +24,9 @@ public class Pedido {
     private String direccion;
     private String metodoPago;
     private Double totalPedido;
+
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "pedido_item", joinColumns = @JoinColumn(name = "id_pedido"))
+    private List<PedidoItem> items = new ArrayList<>();
 }
