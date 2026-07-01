@@ -38,7 +38,7 @@ public class ConsolaCliente implements CommandLineRunner {
         Scanner teclado = new Scanner(System.in);
 
         System.out.println("\n==================================================");
-        System.out.println("🛒  TIENDA DE IMPORTACIONES — PANEL CLIENTE");
+        System.out.println("   IMPORTADORA LARRAIN — BIENVENIDO AL SISTEMA DE COMPRAS");
         System.out.println("==================================================");
 
         boolean salir = false;
@@ -50,7 +50,7 @@ public class ConsolaCliente implements CommandLineRunner {
             System.out.println("4. Ver historial de compras");
             System.out.println("5. Salir");
             System.out.println("---------------------------------------------");
-            System.out.print("👉 Seleccione una opción: ");
+            System.out.print("  Seleccione una opción: ");
 
             switch (teclado.nextLine().trim()) {
                 case "1" -> verCatalogo(teclado);
@@ -58,36 +58,32 @@ public class ConsolaCliente implements CommandLineRunner {
                 case "3" -> finalizarCompra(teclado);
                 case "4" -> verHistorial(teclado);
                 case "5" -> {
-                    System.out.println("\n👋 Hasta luego.");
+                    System.out.println("\n  Hasta luego.");
                     salir = true;
                 }
-                default -> System.out.println("❌ Opción no válida. Intente de nuevo.");
+                default -> System.out.println("  Opción no válida. Intente de nuevo.");
             }
         }
         teclado.close();
     }
 
-    // ─────────────────────────────────────────────
-    // OPCIÓN 1 — Ver catálogo
-    // Promueve automáticamente lo que admin haya dejado en producto_scrapeado,
-    // luego muestra el catálogo completo con el precio al público.
-    // ─────────────────────────────────────────────
+
     private void verCatalogo(Scanner teclado) {
         long pendientes = catalogoScrapingService.contarPendientes();
         if (pendientes > 0) {
-            System.out.printf("\n📥 Incorporando %d producto(s) nuevo(s) al catálogo...\n", pendientes);
+            System.out.printf("\n  Incorporando %d producto(s) nuevo(s) al catálogo...\n", pendientes);
             int promovidos = catalogoScrapingService.promoverProductosPendientes();
-            System.out.printf("✅ %d producto(s) publicados.\n", promovidos);
+            System.out.printf("  %d producto(s) publicados.\n", promovidos);
         }
 
         List<Producto> disponibles = productoRepository.findAll();
 
         if (disponibles.isEmpty()) {
-            System.out.println("\n📦 El catálogo está vacío. El administrador aún no ha publicado productos.");
+            System.out.println("\n  El catálogo está vacío. El administrador aún no ha publicado productos.");
             return;
         }
 
-        System.out.println("\n🔍 CATÁLOGO DISPONIBLE:");
+        System.out.println("\n  CATÁLOGO DISPONIBLE:");
         System.out.println("─────────────────────────────────────────────────────────────────────");
         System.out.printf("%-6s %-55s %-14s %-8s%n", "ID", "Producto", "Precio (USD)", "Stock");
         System.out.println("─────────────────────────────────────────────────────────────────────");
@@ -100,33 +96,29 @@ public class ConsolaCliente implements CommandLineRunner {
         }
         System.out.println("─────────────────────────────────────────────────────────────────────");
 
-        // Agregar al carrito desde aquí, sin salir de la vista
         while (true) {
-            System.out.print("\n➕ Ingrese el ID del producto a agregar al carrito (o 0 para volver): ");
+            System.out.print("\n  Ingrese el ID del producto a agregar al carrito (o 0 para volver): ");
             int id = leerEntero(teclado);
             if (id == 0) break;
 
             Producto p = productoRepository.findById((long) id).orElse(null);
             if (p == null || p.getStockBodega() <= 0) {
-                System.out.println("⚠️  Producto no disponible o sin stock.");
+                System.out.println("   Producto no disponible o sin stock.");
             } else {
                 carrito.add(p);
-                System.out.printf("✅ '%s' agregado al carrito.\n", p.getNombreProducto());
+                System.out.printf("  '%s' agregado al carrito.\n", p.getNombreProducto());
             }
         }
     }
 
-    // ─────────────────────────────────────────────
-    // OPCIÓN 2 — Ver carrito
-    // Muestra productos, precio base, IVA (19%), costo de importación (31%) y total.
-    // ─────────────────────────────────────────────
+    
     private void verCarrito() {
         if (carrito.isEmpty()) {
-            System.out.println("\n🛒 Su carrito está vacío.");
+            System.out.println("\n  Su carrito está vacío.");
             return;
         }
 
-        System.out.println("\n🛒 CARRITO DE COMPRAS:");
+        System.out.println("\n  CARRITO DE COMPRAS:");
         System.out.println("─────────────────────────────────────────────────────────────────────────────");
         System.out.printf("%-4s %-45s %-12s %-12s %-12s %-12s%n",
                 "#", "Producto", "Base (USD)", "Import.31%", "IVA 19%", "Total");
@@ -151,22 +143,19 @@ public class ConsolaCliente implements CommandLineRunner {
         }
 
         System.out.println("─────────────────────────────────────────────────────────────────────────────");
-        System.out.printf("💰 TOTAL A PAGAR: $%.2f USD%n", totalCarrito);
+        System.out.printf("  TOTAL A PAGAR: $%.2f USD%n", totalCarrito);
     }
 
-    // ─────────────────────────────────────────────
-    // OPCIÓN 3 — Finalizar compra
-    // ─────────────────────────────────────────────
+
     private void finalizarCompra(Scanner teclado) {
         if (carrito.isEmpty()) {
-            System.out.println("\n⚠️  Su carrito está vacío. Agregue productos antes de pagar.");
+            System.out.println("\n   Su carrito está vacío. Agregue productos antes de pagar.");
             return;
         }
 
-        // Mostrar resumen antes de pedir datos
         verCarrito();
 
-        System.out.println("\n📋 DATOS PARA LA COMPRA:");
+        System.out.println("\n  DATOS PARA LA COMPRA:");
         System.out.print("   Nombre completo : ");
         String nombre = teclado.nextLine().trim();
 
@@ -179,29 +168,29 @@ public class ConsolaCliente implements CommandLineRunner {
         System.out.print("   Correo electrónico  : ");
         String email = teclado.nextLine().trim();
 
-        System.out.println("\n💳 MÉTODO DE PAGO:");
+        System.out.println("\n  MÉTODO DE PAGO:");
         System.out.println("   1. Crédito");
         System.out.println("   2. Débito");
-        System.out.print("   👉 Seleccione (1 o 2): ");
+        System.out.print("     Seleccione (1 o 2): ");
 
         String metodoPago;
         switch (teclado.nextLine().trim()) {
             case "1" -> metodoPago = "Crédito";
             case "2" -> metodoPago = "Débito";
             default  -> {
-                System.out.println("❌ Opción inválida. Compra cancelada.");
+                System.out.println("  Opción inválida. Compra cancelada.");
                 return;
             }
         }
 
         try {
             pedidoService.procesarPago(carrito, nombre, rut, email, direccion, metodoPago);
-            System.out.println("\n✅ ¡Compra finalizada con éxito!");
+            System.out.println("\n  ¡Compra finalizada con éxito!");
             System.out.printf("   Método de pago: %s | RUT: %s%n", metodoPago, rut);
             System.out.println("   Su pedido ha sido registrado.");
             carrito.clear();
         } catch (Exception e) {
-            System.out.println("❌ Error al procesar la compra: " + e.getMessage());
+            System.out.println("  Error al procesar la compra: " + e.getMessage());
         }
     }
 
@@ -209,7 +198,7 @@ public class ConsolaCliente implements CommandLineRunner {
     // OPCIÓN 4 — Historial de compras por RUT
     // ─────────────────────────────────────────────
     private void verHistorial(Scanner teclado) {
-        System.out.print("\n🔎 Ingrese su RUT para consultar el historial (ej: 12345678-9): ");
+        System.out.print("\n  Ingrese su RUT para consultar el historial (ej: 12345678-9): ");
         String rut = teclado.nextLine().trim();
 
         List<Pedido> pedidos = pedidoRepository.findByRut(rut);

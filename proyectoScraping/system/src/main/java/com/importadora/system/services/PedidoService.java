@@ -34,7 +34,7 @@ public class PedidoService {
         List<PedidoItem> items = new ArrayList<>();
 
         for (Producto p : carrito) {
-            double precioFinal = p.getPrecioAlPublico(); // ya incluye importación + IVA
+            double precioFinal = p.getPrecioAlPublico(); 
             total += precioFinal;
 
             PedidoItem item = new PedidoItem();
