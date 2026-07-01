@@ -76,7 +76,7 @@ public class ConsolaAdministrador implements CommandLineRunner {
         int limite = leerEntero(scanner);
         if (limite <= 0) limite = 20;
 
-        System.out.println("\n  Iniciando extracción en segundo plano (Modo Headless activo)...");
+        System.out.println("\n  Iniciando extracción...");
 
         List<ProductoPublicadoDTO> resultados = scrapingService.ejecutarScrapingHibrido(urlObjetivo, limite);
 
@@ -85,7 +85,7 @@ public class ConsolaAdministrador implements CommandLineRunner {
             return;
         }
 
-        System.out.println("\n  PRODUCTOS ENCONTRADOS (aún no publicados):");
+        System.out.println("\n  PRODUCTOS ENCONTRADOS:");
         System.out.println("─────────────────────────────────────────────────────────");
         for (int i = 0; i < resultados.size(); i++) {
             ProductoPublicadoDTO p = resultados.get(i);
@@ -111,7 +111,7 @@ public class ConsolaAdministrador implements CommandLineRunner {
         String entrada = scanner.nextLine().trim().toLowerCase();
 
         if (entrada.equals("0")) {
-            System.out.println("🗑️  Descartado. Ningún producto fue publicado.");
+            System.out.println("   Descartado. Ningún producto fue publicado.");
             return;
         }
 
@@ -184,7 +184,7 @@ public class ConsolaAdministrador implements CommandLineRunner {
             double totalCliente = pedidosCliente.stream()
                     .mapToDouble(PedidoMetrica::getTotalPedido).sum();
 
-            System.out.printf("%n  👤 %s  (RUT: %s)  —  %d pedido(s)  |  Total gastado: $%.2f USD%n",
+            System.out.printf("%n    %s  (RUT: %s)  —  %d pedido(s)  |  Total gastado: $%.2f USD%n",
                     primero.getNombreCliente(), rut, pedidosCliente.size(), totalCliente);
             System.out.println("  ──────────────────────────────────────────────────────");
 
@@ -208,10 +208,10 @@ public class ConsolaAdministrador implements CommandLineRunner {
         }
 
         System.out.println("\n╔══════════════════════════════════════════════════════╗");
-        System.out.printf( "║  Clientes únicos : %-4d                               ║%n", porCliente.size());
-        System.out.printf( "║  Total pedidos   : %-4d                               ║%n", totalPedidos);
+        System.out.printf( "║  Clientes únicos : %-4d                           ║%n", porCliente.size());
+        System.out.printf( "║  Total pedidos   : %-4d                           ║%n", totalPedidos);
         System.out.printf( "║  Recaudado total : $%-8.2f USD                    ║%n", granTotal);
-        System.out.println("╚══════════════════════════════════════════════════════╝");
+        System.out.println("  ╚══════════════════════════════════════════════════════╝");
     }
 
     private String obtenerUrlPorCategoria(int opcion) {
