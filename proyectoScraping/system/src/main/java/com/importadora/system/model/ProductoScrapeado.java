@@ -4,17 +4,18 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name = "producto")
-public class Producto {
+@Table(name = "producto_scrapeado")
+public class ProductoScrapeado {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idProducto;
+    private Long idScrapeo;
 
     @Column(nullable = false, length = 500)
     private String nombreProducto;
@@ -26,13 +27,5 @@ public class Producto {
     private String tipoProducto;
 
     @Column(nullable = false)
-    private Integer stockBodega;
-
-
-    public Double getPrecioAlPublico() {
-        if (this.precioLocal == null) return 0.0;
-        double conImportacion = this.precioLocal * 1.31;
-        double conIva         = conImportacion * 1.19;
-        return Math.round(conIva * 100.0) / 100.0;
-    }
+    private LocalDateTime fechaScrapeo;
 }

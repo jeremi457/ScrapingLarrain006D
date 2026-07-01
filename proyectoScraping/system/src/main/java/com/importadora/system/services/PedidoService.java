@@ -21,37 +21,36 @@ public class PedidoService {
         this.productoRepository = productoRepository;
     }
 
-    public void procesarPago(List<Producto> carrito, String nombreCliente, String rut) {
+    public void procesarPago(List<Producto> carrito, String nombreCliente, String rut,
+                              String email, String direccion, String metodoPago) {
         Pedido nuevoPedido = new Pedido();
         nuevoPedido.setNombreCliente(nombreCliente);
         nuevoPedido.setRut(rut);
-        nuevoPedido.setEmail("cliente@correo.com"); 
-        nuevoPedido.setDireccion("Retiro en tienda");
-        nuevoPedido.setMetodoPago("Transferencia");
+        nuevoPedido.setEmail(email);
+        nuevoPedido.setDireccion(direccion);
+        nuevoPedido.setMetodoPago(metodoPago);
 
         double total = 0;
-        List<PedidoItem> itemsFotografia = new ArrayList<>();
+        List<PedidoItem> items = new ArrayList<>();
 
         for (Producto p : carrito) {
-
-            double precioFinal = p.getPrecioAlPublico();
+            double precioFinal = p.getPrecioAlPublico(); // ya incluye importación + IVA
             total += precioFinal;
 
             PedidoItem item = new PedidoItem();
             item.setIdProductoOriginal(p.getIdProducto());
             item.setNombreProducto(p.getNombreProducto());
             item.setPrecioCobrado(precioFinal);
-            item.setCantidad(1); 
+            item.setCantidad(1);
+            items.add(item);
 
-            itemsFotografia.add(item);
-
+            // Descontar stock
             p.setStockBodega(p.getStockBodega() - 1);
             productoRepository.save(p);
         }
 
-        nuevoPedido.setTotalPedido(total);
-        nuevoPedido.setItems(itemsFotografia);
-
+        nuevoPedido.setTotalPedido(Math.round(total * 100.0) / 100.0);
+        nuevoPedido.setItems(items);
         pedidoRepository.save(nuevoPedido);
     }
 }
