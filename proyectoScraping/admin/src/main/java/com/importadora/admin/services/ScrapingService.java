@@ -17,11 +17,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Responsabilidad única: scrapear y devolver resultados en memoria.
- * No decide qué se guarda ni qué se publica — esa decisión la toma
- * el administrador desde la consola.
- */
+
 @Service
 public class ScrapingService {
 
@@ -32,7 +28,6 @@ public class ScrapingService {
 
     private final Random random = new Random();
 
-    // Ya no depende de ningún repositorio: scrapea y devuelve, nada más.
     public List<ProductoPublicadoDTO> ejecutarScrapingHibrido(String urlCategoria, int limiteTotal) {
         List<ProductoPublicadoDTO> productosExtraidos = new ArrayList<>();
 
@@ -58,7 +53,7 @@ public class ScrapingService {
             while (productosExtraidos.size() < limiteTotal) {
 
                 String urlConPagina = urlCategoria + "?page=" + paginaActual;
-                System.out.printf("   🌐 Navegando invisible a Página %d... (Progreso: %d/%d productos)\n",
+                System.out.printf("     Navegando invisible a Página %d... (Progreso: %d/%d productos)\n",
                         paginaActual, productosExtraidos.size(), limiteTotal);
 
                 driver.get(urlConPagina);
@@ -101,11 +96,11 @@ public class ScrapingService {
                     }
                 }
 
-                System.out.printf("   ✨ Página %d analizada. Se capturaron %d productos válidos.\n",
+                System.out.printf("     Página %d analizada. Se capturaron %d productos válidos.\n",
                         paginaActual, productosNuevosEnEstaPagina);
 
                 if (productosNuevosEnEstaPagina == 0) {
-                    System.out.println("   ⚠️ No se detectaron productos nuevos en esta página. Finalizando recolección.");
+                    System.out.println("     No se detectaron productos nuevos en esta página. Finalizando recolección.");
                     break;
                 }
 
